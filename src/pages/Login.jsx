@@ -65,13 +65,14 @@ const LoginForm = () => {
         duration: 2000,
         isClosable: true,
       });
-    } catch (error) {}
-    toast({
-      title: "Email and password not match",
-      status: "error",
-      duration: 3000,
-      isClosable: true,
-    });
+    } catch (error) {
+      toast({
+        title: "Email and password not match",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
