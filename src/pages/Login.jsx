@@ -14,6 +14,7 @@ import {
   useColorModeValue,
   InputGroup,
   InputRightElement,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { Formik, Field, ErrorMessage, Form } from "formik";
@@ -36,6 +37,7 @@ const validationSchema = Yup.object().shape({
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (values) => {
@@ -57,7 +59,19 @@ const LoginForm = () => {
           navigate("/menu-admin");
         }
       }
+      toast({
+        title: "Login Success",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {}
+    toast({
+      title: "Email and password not match",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
