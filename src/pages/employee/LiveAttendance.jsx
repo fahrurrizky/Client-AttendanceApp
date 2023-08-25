@@ -43,7 +43,7 @@ const DashboardEmployee = () => {
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/auth");
+        const response = await axios.get("https://energetic-ruby-sockeye.cyclic.cloud/api/auth");
         setUsers(response.data.users);
       } catch (error) {
         console.error("Error fetching users:", error);
