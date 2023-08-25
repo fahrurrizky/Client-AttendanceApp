@@ -38,6 +38,8 @@ const DashboardEmployee = () => {
   const [users, setUsers] = useState([]);
   const [isClockInDisabled, setIsClockInDisabled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clockInLoading, setClockInLoading] = useState(false);
+  const [clockOutLoading, setClockOutLoading] = useState(false);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -115,6 +117,7 @@ const DashboardEmployee = () => {
 
   const handleClockIn = async () => {
     try {
+      setClockInLoading(true); // Set loading to true before making the request
       const response = await axios.post(
         "https://energetic-ruby-sockeye.cyclic.cloud/api/employee/clock-in",
         {
@@ -130,11 +133,14 @@ const DashboardEmployee = () => {
     } catch (error) {
       alert("Clock in Failed, because already clocked in");
       console.error("Error:", error);
+    } finally {
+      setClockInLoading(false); // Reset loading after request completion
     }
   };
 
   const handleClockOut = async () => {
     try {
+      setClockOutLoading(true); // Set loading to true before making the request
       const response = await axios.post(
         "https://energetic-ruby-sockeye.cyclic.cloud/api/employee/clock-out",
         {
@@ -149,6 +155,8 @@ const DashboardEmployee = () => {
       }
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setClockOutLoading(false); // Reset loading after request completion
     }
   };
 
@@ -203,26 +211,26 @@ const DashboardEmployee = () => {
           <Flex>
             <Button
               onClick={handleClockIn}
-              disabled={isClockInDisabled}
+              disabled={isClockInDisabled || clockInLoading} // Disable the button while loading
               variant={"outline"}
               size={'sm'}
               borderColor={'gray.400'}
               textColor="#0ED2F7"
               _hover={{ bgGradient: "linear(to-l, #7928CA,#FF0080)", color: "white" }}
             >
-              Clock In
+              {clockInLoading ? "Clocking In...." : "Clock In"}
             </Button>
             <Spacer/>
             <Button
               onClick={handleClockOut}
-              disabled={!isClockInDisabled}
+              disabled={!isClockInDisabled || clockOutLoading} // Disable the button while loading
               variant={"outline"}
               size={'sm'}
               borderColor={'gray.400'}
               textColor="#FF0080"
               _hover={{ bgGradient: "linear(to-l, #7928CA,#FF0080)", color: "white" }}
             >
-              Clock Out
+               {clockOutLoading ? "Clocking Out...." : "Clock Out"}
             </Button>
           </Flex>     
       </Stack>
