@@ -41,6 +41,9 @@ const DashboardEmployee = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clockInLoading, setClockInLoading] = useState(false);
   const [clockOutLoading, setClockOutLoading] = useState(false);
+  const [clockedInToday, setClockedInToday] = useState(false);
+  const [clockedOutToday, setClockedOutToday] = useState(false);
+
 
   useEffect(() => {
     const fetchAllUsers = async () => {
