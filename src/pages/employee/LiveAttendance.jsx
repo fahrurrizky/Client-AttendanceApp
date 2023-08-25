@@ -34,9 +34,40 @@ const DashboardEmployee = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [attendanceHistory, setAttendanceHistory] = useState([]);
   const [userId, setUserId] = useState("");
+  const [loggedInUserFullName, setLoggedInUserFullName] = useState("");
+  const [users, setUsers] = useState([]);
   const [isClockInDisabled, setIsClockInDisabled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/auth");
+        setUsers(response.data.users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchAllUsers();
+    // ... (other useEffect dependencies)
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
+      fetchAttendanceHistory();
+
+      // Find the user with the matching id and set their fullName
+      const loggedInUser = users.find(user => user.id === decodedToken.id);
+      if (loggedInUser) {
+        setLoggedInUserFullName(loggedInUser.fullName);
+      }
+    }
+  }, [userId, users]); // Include users in the dependency array
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -159,7 +190,7 @@ const DashboardEmployee = () => {
               />
             </Box>
         <chakra.h1 fontSize="lg" alignSelf="center">
-          M. Fahrur Rizky
+        {loggedInUserFullName}
         </chakra.h1>
         <Text fontSize="lg" color="black" textAlign="center" fontWeight={'bold'}>
             {/* {currentTime.toLocaleTimeString()} */}
