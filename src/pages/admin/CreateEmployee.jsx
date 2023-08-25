@@ -9,13 +9,16 @@ import {
   Input,
   Select,
   VStack,
+  useToast,
   Heading,
+  Spinner,
 } from "@chakra-ui/react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const Dashbor = () => {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -28,7 +31,10 @@ const Dashbor = () => {
     }
   }, [navigate]);
 
+  const [isCreatingEmployee, setIsCreatingEmployee] = useState(false); // Add state for loading
+
   const handleCreateEmployee = async (values) => {
+    setIsCreatingEmployee(true); // Set loading state to true
     try {
       const response = await axios.post(
         "https://energetic-ruby-sockeye.cyclic.cloud/api/auth",
@@ -45,9 +51,24 @@ const Dashbor = () => {
         }
       );
 
-      alert(response.data.message);
+      toast({
+        title: "Created Employee Success,",
+        description: "Check the registered email to fill in the complete data",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "Create Employee failed, Email Already Registered",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsCreatingEmployee(false); // Reset loading state
     }
   };
 
@@ -114,6 +135,9 @@ const Dashbor = () => {
               rounded="md"
               w="100%"
               mt={'3'}
+              isLoading={isCreatingEmployee}
+              loadingText="Creating..."
+              spinner={<Spinner size="sm" />}
             >
               Create Employee
             </Button>

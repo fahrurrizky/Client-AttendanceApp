@@ -11,7 +11,9 @@ import {
   Heading,
   VStack,
   Text,
+  useToast,
   useColorModeValue,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -35,11 +37,14 @@ const validationSchema = Yup.object().shape({
 const RegisEmployee = () => {
   const { token } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
+  const [isRegistrationEmployee, setIsRegistrationEmployee] = useState(false); // Add state for loading
 
   const handleSubmit = async (values) => {
+    setIsRegistrationEmployee(true); // Set loading state to true
     try {
       const response = await axios.patch(
         "https://energetic-ruby-sockeye.cyclic.cloud/api/auth",
@@ -55,14 +60,24 @@ const RegisEmployee = () => {
           },
         }
       );
+      toast({
+        title: "Success,",
+        description: "Registration successfully completed, please login",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
       if (response.status === 200) {
         navigate("/"); // Redirect to homepage after successful registration
       }
     } catch (error) {
       console.error(error)
-      setError("An error occurred. Please try again.");
+      setError("An error occurred, link validity period has expired, please contact admin.");
+    } finally {
+      setIsRegistrationEmployee(false); // Reset loading state
     }
   };
+  
 
   return (
     <Box
@@ -209,6 +224,9 @@ const RegisEmployee = () => {
                     }}
                     rounded="md"
                     w="100%"
+                    isLoading={isRegistrationEmployee}
+                    loadingText="Registration..."
+                    spinner={<Spinner size="sm" />}
                   >
                     Register
                   </Button>

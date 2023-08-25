@@ -15,6 +15,7 @@ import {
   InputGroup,
   InputRightElement,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { Formik, Field, ErrorMessage, Form } from "formik";
@@ -39,8 +40,9 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
-
+  const [islogin, setIslogin] = useState(false); // Add state for loading
   const handleLogin = async (values) => {
+    setIslogin(true); // Set loading state to true
     try {
       const response = await axios.post("https://energetic-ruby-sockeye.cyclic.cloud/api/login", {
         email: values.email,
@@ -72,6 +74,8 @@ const LoginForm = () => {
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setIslogin(false); // Reset loading state
     }
   };
 
@@ -189,7 +193,10 @@ const LoginForm = () => {
                     }}
                     rounded="md"
                     w="100%"
-                  >
+                    isLoading={islogin}
+                    loadingText="Creating..."
+                    spinner={<Spinner size="sm" />}
+                    >
                     Login
                   </Button>
                 </VStack>
