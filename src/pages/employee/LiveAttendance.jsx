@@ -41,9 +41,6 @@ const DashboardEmployee = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clockInLoading, setClockInLoading] = useState(false);
   const [clockOutLoading, setClockOutLoading] = useState(false);
-  const [clockedInToday, setClockedInToday] = useState(false);
-  const [clockedOutToday, setClockedOutToday] = useState(false);
-
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -113,41 +110,22 @@ const DashboardEmployee = () => {
       const response = await axios.get(
         `https://energetic-ruby-sockeye.cyclic.cloud/api/employee/attendance-history/${userId}`
       );
-  
-      const today = new Date().toLocaleDateString();
-      const todayEntries = response.data.history.filter(
-        entry => new Date(entry.ClockIn).toLocaleDateString() === today
-      );
-  
-      setAttendanceHistory(todayEntries);
-  
-      // Check if clocked in or out today
-      const userClockedInToday = todayEntries.some(entry => !entry.ClockOut);
-      setClockedInToday(userClockedInToday);
-  
-      const userClockedOutToday = todayEntries.some(entry => entry.ClockOut !== null);
-      setClockedOutToday(userClockedOutToday);
+      setAttendanceHistory(response.data.history);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
 
   const handleClockIn = async () => {
-    if (clockedInToday) {
-      alert("You have already clocked in today.");
-      return;
-    }
-  
     try {
-      setClockInLoading(true);
+      setClockInLoading(true); // Set loading to true before making the request
       const response = await axios.post(
         "https://energetic-ruby-sockeye.cyclic.cloud/api/employee/clock-in",
         {
           userID: userId,
         }
       );
-  
+
       if (response.status === 200) {
         setClockInTime(new Date());
         alert("Clock In Successful");
@@ -157,25 +135,20 @@ const DashboardEmployee = () => {
       alert("Clock in Failed, because already clocked in");
       console.error("Error:", error);
     } finally {
-      setClockInLoading(false);
+      setClockInLoading(false); // Reset loading after request completion
     }
   };
-  
+
   const handleClockOut = async () => {
-    if (clockedOutToday) {
-      alert("You have already clocked out today.");
-      return;
-    }
-  
     try {
-      setClockOutLoading(true);
+      setClockOutLoading(true); // Set loading to true before making the request
       const response = await axios.post(
         "https://energetic-ruby-sockeye.cyclic.cloud/api/employee/clock-out",
         {
           userID: userId,
         }
       );
-  
+
       if (response.status === 200) {
         setClockOutTime(new Date());
         alert("Clock Out Successful");
@@ -184,10 +157,9 @@ const DashboardEmployee = () => {
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setClockOutLoading(false);
+      setClockOutLoading(false); // Reset loading after request completion
     }
   };
-  
 
   const formatCurrency = (value) => {
     const formatter = new Intl.NumberFormat("id-ID", {
