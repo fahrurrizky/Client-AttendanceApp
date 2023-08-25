@@ -20,6 +20,7 @@ import {
   Divider,
   useColorModeValue,
   Spacer,
+  Spinner,
 } from "@chakra-ui/react";
 import jwtDecode from "jwt-decode";
 import CurrentDate from "../employee/DateClock";
@@ -218,7 +219,7 @@ const DashboardEmployee = () => {
               textColor="#0ED2F7"
               _hover={{ bgGradient: "linear(to-l, #7928CA,#FF0080)", color: "white" }}
             >
-              {clockInLoading ? "Clocking In...." : "Clock In"}
+               {clockInLoading ? <Spinner size="sm" color="blue.500" /> : "Clock In"}
             </Button>
             <Spacer/>
             <Button
@@ -230,7 +231,7 @@ const DashboardEmployee = () => {
               textColor="#FF0080"
               _hover={{ bgGradient: "linear(to-l, #7928CA,#FF0080)", color: "white" }}
             >
-               {clockOutLoading ? "Clocking Out...." : "Clock Out"}
+                {clockOutLoading ? <Spinner size="sm" color="red.500" /> : "Clock Out"}
             </Button>
           </Flex>     
       </Stack>
