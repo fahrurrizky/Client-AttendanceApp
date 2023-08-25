@@ -38,7 +38,6 @@ const DashboardEmployee = () => {
   const [users, setUsers] = useState([]);
   const [isClockInDisabled, setIsClockInDisabled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -68,6 +67,7 @@ const DashboardEmployee = () => {
       }
     }
   }, [userId, users]); // Include users in the dependency array
+  
 
   useEffect(() => {
     const intervalId = setInterval(() => {
